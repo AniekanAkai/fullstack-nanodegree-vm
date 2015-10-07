@@ -82,9 +82,25 @@ def Post(env, resp):
     resp('302 REDIRECT', headers) 
     return ['Redirecting']
 
+def Delete(env, resp):
+    '''
+    Deletes the  forum post that was selected.
+    Redirect to home.
+    '''
+    # Get post content
+    input = env['wsgi.input']
+    length = int(env.get('CONTENT_LENGTH', 0))
+    # 302 redirect back to the main page
+    headers = [('Location', '/'),
+               ('Content-type', 'text/plain')]
+    resp('302 REDIRECT', headers) 
+    return ['Redirecting']    
+	
+
 ## Dispatch table - maps URL prefixes to request handlers
 DISPATCH = {'': View,
             'post': Post,
+			'delete/(\d+))': Delete
 	    }
 
 ## Dispatcher forwards requests according to the DISPATCH table.
@@ -102,6 +118,5 @@ def Dispatcher(env, resp):
 
 # Run this bad server only on localhost!
 httpd = make_server('', 8000, Dispatcher)
-print "Serving HTTP on port 8000..."
+print ("Serving HTTP on port 8000...")
 httpd.serve_forever()
-
